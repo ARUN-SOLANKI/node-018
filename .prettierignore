@@ -1,0 +1,10 @@
+node_modules
+__generated__
+.next
+storybook-static
+public/
+build/
+deploy/
+.env
+.gitlab-ci.yml
+package-lock.json
