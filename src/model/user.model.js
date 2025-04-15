@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 import bcrypt from 'bcrypt'
 import jwt from "jsonwebtoken";
-import { config } from "../../utils/configEnv.js";
+import { config } from "../utils/configEnv.js";
 
 const userSchema = new Schema({
     email: {
@@ -39,18 +39,18 @@ const userSchema = new Schema({
 
 
 userSchema.pre("save", async function (next) {
-    if (!this.isModified) next()
+    if (!this.isModified("password")) next()
     this.password = await bcrypt.hash(this.password, 10);
     next();
 })
 
 userSchema.methods.verifyPassword = async function (password) {
-    return bcrypt.compare(password, this.password);
+    return await bcrypt.compare(password, this.password);
 };
 
 userSchema.methods.genrateAccessToken = async function () {
     const token = await jwt.sign({
-        id: this._id,
+        _id: this._id,
         email: this.email,
         userName : this.userName
     }, config.accessTokenSecret, {
@@ -61,7 +61,7 @@ userSchema.methods.genrateAccessToken = async function () {
 }
 userSchema.methods.genrateRefressToken = async function () {
     const token = await jwt.sign({
-        id: this._id,
+        _id: this._id,
     }, config.refreshTokenSecret, { expiresIn: config.refreshTokenExpiry })
     
     return token
