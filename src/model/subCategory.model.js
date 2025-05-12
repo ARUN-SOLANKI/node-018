@@ -28,5 +28,9 @@ const subCategorySchema = new Schema({
     timestamps : true
 })
 
+subCategorySchema.query.byCategory = function (categoryId) {
+    return this.where({ categoryId: { $in: [categoryId] } });
+};
+
 
 export const SubCategory = model("SubCategory", subCategorySchema )

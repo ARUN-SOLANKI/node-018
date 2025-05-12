@@ -36,9 +36,26 @@
 export const getUsers = asyncHandler(async (req, res) => {
     const users = await User.find().select("-password -refreshToken")
     if (users) {
-        return res.status(200).json(new ApiResponse(200, "User successfully created", users));
+        return res.status(200).json(new ApiResponse(200, "User successfully fetched", users));
     }
     throw new ApiError(500, "Failed To Fetch users List");
+})
+
+export const getUserById = asyncHandler(async (req, res) => {
+    const userId = req.params.userId
+    
+    if (!userId) {
+        throw new ApiError(401, "userId Is Required !!")
+    }
+
+    const response = await User.findById(userId).select("-password -refreshToken");
+
+    if (response) {
+        return res.status(200).json(new ApiResponse(200 , "fetched SuccessFully", response))
+    }
+
+
+    throw new ApiError(500 , "Error while Fetch User Details")
 })
 
 

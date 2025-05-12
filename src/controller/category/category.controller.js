@@ -4,7 +4,7 @@ import ApiResponse from "../../utils/api/ApiResponse.js";
 import asyncHandler from "../../utils/api/asyncHandler.js";
 
 export const getCategories = asyncHandler(async (_, res) => {
-    const data = await Category.find().populate("subCategory", "name description _id")
+    const data = await Category.find()
     if (data) {
         return res.status(200).json(new ApiResponse(200, "SuccessFully Fetched", data));
     }
@@ -19,7 +19,7 @@ export const getCategory = asyncHandler(async (req, res) => {
     if (!categoryId) {
         throw new ApiError(401, "CategoryId is Required");
     }
-    const data = await Category.findById(categoryId).populate("subCategory", "_id name description");
+    const data = await Category.findById(categoryId)
 
     if (data) {
         return  res.status(200).json(new ApiResponse(200, "SuccessFully Fetched" , data))
@@ -29,7 +29,7 @@ export const getCategory = asyncHandler(async (req, res) => {
 
 export const createCategory = asyncHandler(async (req, res) => {
     
-    const { name, description, subCategory } = req.body;
+    const { name, description } = req.body;
 
     if (!name) {
         throw new ApiError(401, "Category Name is Required")
@@ -46,7 +46,6 @@ export const createCategory = asyncHandler(async (req, res) => {
     const createdCategory =await Category.create({
         name,
         description: description || null,
-        subCategory: subCategory || [],
     })
 
     if (createdCategory) {
